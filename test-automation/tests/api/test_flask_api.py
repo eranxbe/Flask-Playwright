@@ -24,7 +24,6 @@ class TestRestAPI:
         p_gender = "male"
         client = APIClientRestAPI(context_api)
         person = client.add_person(p_name, p_age, p_gender)
-        print(person)
         assert person['name'] == p_name
         assert person['gender'] == p_gender
 
@@ -32,7 +31,6 @@ class TestRestAPI:
     def test_delete_person_by_id(self, context_api):
         client = APIClientRestAPI(context_api)
         last_person = client.search_person(name='mike', age=33)
-        print(last_person)
         response = client.delete_person_by_id(last_person['id'])
         assert response.status == 204
     
