@@ -7,9 +7,8 @@ This project is a combination of knowledge in test automation, as well as self-s
 To install and use flask-playwright follow these steps:
   1. Clone the repository 
   2. Install the requirements.txt: `pip install -r requirements.txt` 
-  3. Since this project is still locally run, run on different terminals these commands: 
-    - Flask server (./app): `python -m flask run --debugger`
-    - Pytest-playwright tests (./test-automation): `python -m pytest -v`
+  3. To run flask server app(./app): `python -m flask run --debugger`
+  4. To run pytest-playwright tests (./test-automation): `python -m pytest -v`
 
 ## Endpoints
 
