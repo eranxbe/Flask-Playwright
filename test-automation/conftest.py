@@ -9,19 +9,19 @@ def playwright() -> Playwright:
     with sync_playwright() as playwright:
         yield playwright
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def browser(playwright: Playwright):
     browser = playwright.chromium.launch(headless=False)
     yield browser
     browser.close()
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def context_web(browser) -> Generator[BrowserContext, None, None]:
     context = browser.new_context()
     yield context
     context.close()
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def context_api(playwright: Playwright) -> Generator[APIRequestContext, None, None]:
     headers = {
         "content-type": "application/json"

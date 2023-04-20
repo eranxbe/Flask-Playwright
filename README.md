@@ -9,6 +9,7 @@ To install and use flask-playwright follow these steps:
   2. Install the requirements.txt: `pip install -r requirements.txt` 
   3. To run flask server app(./app): `python -m flask run --debugger`
   4. To run pytest-playwright tests (./test-automation): `python -m pytest -v`
+  5. Allure reports system is implemented (can be seen at pytest.ini file), to access reports(./test-automation): `allure serve /reports`
 
 ## Endpoints
 
