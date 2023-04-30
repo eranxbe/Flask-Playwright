@@ -1,38 +1,44 @@
 
 import pytest
 from infra.clients.api_client_flask_api import APIClientRestAPI
+from requests.exceptions import HTTPError
+
+@pytest.fixture(scope="module")
+def api_client(context_api):
+    return APIClientRestAPI(context_api)
 
 class TestRestAPI:
-    @pytest.mark.usefixtures("context_api")
-    def test_get_person_by_id(self, context_api):
-        client = APIClientRestAPI(context_api)
-        person = client.get_person_by_id('2')
-        assert person['name'] == 'Jane Doe'
-        assert person['gender'] == 'female'
 
-    @pytest.mark.usefixtures("context_api")
-    def test_search_person(self, context_api):
-        client = APIClientRestAPI(context_api)
-        person = client.search_person(name='gustavo')
-        assert person['name'] == 'gustavo'
-        assert person['gender'] == 'Male'
 
-    @pytest.mark.usefixtures("context_api")
-    def test_add_person(self, context_api):
-        p_name = "mike"
-        p_age = "33"
+    def test_get_user_by_name(self, api_client):
+        expected_name = 'mike'
+        actual_person = api_client.get_person_by_name(expected_name)
+        assert actual_person['name'] == expected_name
+    ''' test ready '''
+
+    def test_get_all(self, api_client):
+        person_list = api_client.get_all_person()
+        print(person_list)
+        assert person_list[0]['gender'] == 'male'
+    ''' test ready ''' 
+
+    def test_add_person(self, api_client):
+        p_name = "lukas"
+        p_age = 42
         p_gender = "male"
-        client = APIClientRestAPI(context_api)
-        person = client.add_person(p_name, p_age, p_gender)
-        assert person['name'] == p_name
-        assert person['gender'] == p_gender
+        api_client.add_person(name=p_name, age=p_age, gender=p_gender)
+        expected_person = api_client.get_person_by_name(p_name)
+        assert expected_person['name'] == p_name
+    ''' test ready '''    
 
-    @pytest.mark.usefixtures("context_api")
-    def test_delete_person_by_id(self, context_api):
-        client = APIClientRestAPI(context_api)
-        last_person = client.search_person(name='mike', age=33)
-        response = client.delete_person_by_id(last_person['id'])
-        assert response.status == 204
+    def test_delete_person(self, api_client):
+        person_name = "donna"
+        api_client.delete_person(person_name)
+        response = api_client.get_person_by_name(person_name)
+        assert response['status'] == 404
+    ''' test ready '''
+
+    ## create edit person test
     
 
         

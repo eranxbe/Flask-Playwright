@@ -9,34 +9,35 @@ class APIClientRestAPI(APIClient):
     def get_person_by_id(self, id):
         return self.get_request(f'person/{id}')
     
-    def search_person(self, name: str = None, age: int = None):
-        data = {
-            "name" : name,
-            "age" : age
-        }
-        response = self.get_request('/search', data=data)
-        return response[0] if response else None
+    def get_person_by_name(self, name):
+        return self.get_request(f'person/{name}')
+    
+    def get_all_person(self):
+        return self.get_request('get-all')
 
     def add_person(self, name, age, gender):
         data = {
-            "name" : name,
-            "age" : age,
-            "gender" : gender
+            "name" : str(name),
+            "age" : int(age),
+            "gender" : str(gender)
         }
         return self.post_request('/add-person', data=data)
     
 
-    def change_person(self, id, name, age, gender):
-        data = {
-            "id": id,
-            "name" : name,
-            "age" : age,
-            "gender" : gender
-        }
-        return self.put_request('/change-person', data=data)
+    # def change_person(self, id, name, age, gender):
+    #     data = {
+    #         "id": id,
+    #         "name" : name,
+    #         "age" : age,
+    #         "gender" : gender
+    #     }
+    #     return self.put_request('/change-person', data=data)
     
-    def delete_person_by_id(self, id):
-        return self.delete_request(f'/delete-person/{id}')
+    def delete_person(self, name):
+        data = {
+            "name" : name
+        }
+        return self.delete_request(f'/delete-person', data=data)
     
 
     

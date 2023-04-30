@@ -24,7 +24,7 @@ def context_web(browser) -> Generator[BrowserContext, None, None]:
 @pytest.fixture(scope="session")
 def context_api(playwright: Playwright) -> Generator[APIRequestContext, None, None]:
     headers = {
-        "content-type": "application/json"
+        "Content-Type": "application/json"
     }
     request_context = playwright.request.new_context(
         extra_http_headers=headers
