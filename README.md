@@ -1,4 +1,4 @@
-# Flask Playwright Test Automation
+# Flask Playwright
 
 This project is a combination of knowledge in test automation, as well as self-study of python, combined together to create a flask application that can be used for web and API testing.
 
@@ -8,7 +8,7 @@ To install and use flask-playwright follow these steps:
   1. Clone the repository 
   2. Install the requirements.txt: `pip install -r requirements.txt` 
   3. To run flask server app(./app): `python -m flask run --debugger`
-  4. To run pytest-playwright tests (./test-automation): `python -m pytest -v`
+  4. To run pytest-playwright tests (./test-automation): `python -m pytest`
   5. Allure reports system is implemented (can be seen at pytest.ini file), to access reports(./test-automation): `allure serve /reports`
 
 ## Endpoints
