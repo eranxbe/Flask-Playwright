@@ -3,8 +3,8 @@ from sqlalchemy import select
 from ..extensions import db
 from ..models.model_person import Person
 
-
-rest = Blueprint('rest', __name__)
+ 
+rest = Blueprint('rest', __name__, url_prefix="/rest")
 
 
 @rest.before_request

@@ -4,7 +4,7 @@ from infra.utils.api_client import APIClient
 class APIClientRestAPI(APIClient):
     def __init__(self, context_api):
         super().__init__(context_api)
-        self.base_url = FLASK_URL
+        self.base_url = f'{FLASK_URL}/rest'
 
     def get_person_by_id(self, id):
         return self.get_request(f'person/{id}')
