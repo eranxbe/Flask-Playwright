@@ -1,7 +1,6 @@
 
 import pytest
 from infra.clients.api_client_flask_api import APIClientRestAPI
-from requests.exceptions import HTTPError
 
 @pytest.fixture(scope="module")
 def api_client(context_api):
@@ -32,7 +31,7 @@ class TestRestAPI:
     ''' test ready '''    
 
     def test_delete_person(self, api_client):
-        person_name = "donna"
+        person_name = "lukas"
         api_client.delete_person(person_name)
         response = api_client.get_person_by_name(person_name)
         assert response['status'] == 404

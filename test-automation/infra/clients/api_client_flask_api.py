@@ -5,9 +5,6 @@ class APIClientRestAPI(APIClient):
     def __init__(self, context_api):
         super().__init__(context_api)
         self.base_url = f'{FLASK_URL}/rest'
-
-    def get_person_by_id(self, id):
-        return self.get_request(f'person/{id}')
     
     def get_person_by_name(self, name):
         return self.get_request(f'person/{name}')
@@ -21,7 +18,7 @@ class APIClientRestAPI(APIClient):
             "age" : int(age),
             "gender" : str(gender)
         }
-        return self.post_request('/add-person', data=data)
+        return self.post_request('add-person', data=data)
     
 
     # def change_person(self, id, name, age, gender):
@@ -37,7 +34,7 @@ class APIClientRestAPI(APIClient):
         data = {
             "name" : name
         }
-        return self.delete_request(f'/delete-person', data=data)
+        return self.delete_request(f'delete-person', data=data)
     
 
     

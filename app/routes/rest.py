@@ -106,6 +106,8 @@ def delete_person():
     data = request.json
     name = data.get('name')
     person = Person.query.filter_by(name=name).first()
+    if not person:
+        return jsonify({"message": "Person not found", "status": 404}), 404
     db.session.delete(person)
     db.session.commit()
     return jsonify(f"person {person.name} with id {person._id} deleted"), 202
