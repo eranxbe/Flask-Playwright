@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% if name %}
+        <h1>Hello {{ name | title }}!</h1>
+    {% else %}
+        <h1>What's your name?</h1>    
+        <form method="POST" action="#">
+            {{ form.name.label }}
+            {{ form.name() }}
+            <br/>
+            {{  form.submit() }}
+        </form>
+    {% endif %} 
+{% endblock content %}

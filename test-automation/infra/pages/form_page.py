@@ -58,8 +58,8 @@ class FormPage:
     def select_gender(self, gender: str):
         options = self.radio_gender.all()
         for option in options:
-            if option.get_attribute('id') == gender.lower():
-                option.click()    
+            if option.get_attribute('value') == gender.lower():
+                option.click(force=True)    
 
     def select_interests(self, interest: str):
         options = self.checkbox_interests.all()

@@ -36,6 +36,5 @@ def context_api(playwright: Playwright) -> Generator[APIRequestContext, None, No
 @pytest.fixture
 def page(context_web):
     page = context_web.new_page()
-    page.goto(FLASK_URL + '/form')
     yield page
     page.close()

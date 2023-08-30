@@ -1,47 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Flask Form</title>
-</head>
-<body>
-    <h1>Flask Form</h1>
-    <form method="POST">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name"><br>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email"><br>
-
-        <label for="age">Age:</label>
-        <input type="number" id="age" name="age"><br>
-
-        <label for="gender">Gender:</label><br>
-        <input type="radio" id="male" name="gender" value="male">
-        <label for="male">Male</label><br>
-        <input type="radio" id="female" name="gender" value="female">
-        <label for="female">Female</label><br>
-        <input type="radio" id="other" name="gender" value="other">
-        <label for="other">Other</label><br>
-
-        <label for="interests">Interests:</label><br>
-        <input type="checkbox" id="music" name="interests" value="music">
-        <label for="music">Music</label><br>
-        <input type="checkbox" id="movies" name="interests" value="movies">
-        <label for="movies">Movies</label><br>
-        <input type="checkbox" id="books" name="interests" value="books">
-        <label for="books">Books</label><br>
-
-        <label for="country">Country:</label>
-        <select id="country" name="country">
-            <option value="usa">USA</option>
-            <option value="canada">Canada</option>
-            <option value="uk">UK</option>
-        </select><br>
-
-        <label for="comments">Comments:</label><br>
-        <textarea id="comments" name="comments" rows="4" cols="50"></textarea><br>
-
-        <input type="submit" value="Submit">
+{% extends 'base.html' %}
+{% block content%}
+ <h3>Please fill this form:</h3>
+    <form method="POST", action="{{ url_for('form.after_submit') }}">
+        {% for field in form %}
+            {% if field.id == 'csrf_token'%}
+                {{""}}
+            {% else %}
+                {% if field.type != 'SubmitField' %} 
+                    {{ field.label }}
+                {% endif %}
+                {{ field() }}
+                <br>
+            {% endif %}
+        {% endfor %}   
     </form>
-</body>
-</html>
+    <br>  
+{% endblock content %}
+
+{% block another %}
+    <h4>hope this works :)</h4>
+{% endblock%}

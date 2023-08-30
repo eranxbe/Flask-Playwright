@@ -2,42 +2,47 @@
 import pytest
 from infra.clients.api_client_flask_api import APIClientRestAPI
 
-@pytest.fixture(scope="module")
-def api_client(context_api):
-    return APIClientRestAPI(context_api)
+@pytest.fixture
+def setup(context_api):
+    api_client = APIClientRestAPI(context_api)
+    yield api_client
 
 class TestRestAPI:
 
+    def test_get_restful(self, setup):
+        api_client = setup
+        found_person = api_client.restful_get_person_by_id(2)
+        assert found_person['person']['name'] == 'chad'
+        ''' test ready '''
 
-    def test_get_user_by_name(self, api_client):
-        expected_name = 'mike'
-        actual_person = api_client.get_person_by_name(expected_name)
-        assert actual_person['name'] == expected_name
-    ''' test ready '''
+    def test_add_new_person_restful(self, setup):
+        api_client = setup
+        name = 'gustavo'
+        age = 35
+        gender = 'male'
+        api_client.restful_add_person(name, age, gender)
+        person = api_client.restful_get_person_by_name(name)
+        assert person['person']['name'] == name
+        ''' test ready '''
 
-    def test_get_all(self, api_client):
-        person_list = api_client.get_all_person()
-        print(person_list)
-        assert person_list[0]['gender'] == 'male'
-    ''' test ready ''' 
+    def test_edit_person_restful(self, setup):
+        api_client = setup
+        name = 'gustavo'
+        new_name = 'gustava'
+        new_age = 34
+        new_gender = 'female'
+        api_client.restful_edit_person(name, new_name, new_age, new_gender)
+        person = api_client.restful_get_person_by_name(new_name)
+        assert person['person']['gender'] == new_gender
+        ''' test ready '''    
 
-    def test_add_person(self, api_client):
-        p_name = "lukas"
-        p_age = 42
-        p_gender = "male"
-        api_client.add_person(name=p_name, age=p_age, gender=p_gender)
-        expected_person = api_client.get_person_by_name(p_name)
-        assert expected_person['name'] == p_name
-    ''' test ready '''    
-
-    def test_delete_person(self, api_client):
-        person_name = "lukas"
-        api_client.delete_person(person_name)
-        response = api_client.get_person_by_name(person_name)
+    def test_delete_person_restful(self, setup):
+        api_client = setup
+        name = 'gustava'
+        api_client.restful_delete_person(name)
+        response = api_client.restful_get_person_by_id(name)
         assert response['status'] == 404
-    ''' test ready '''
-
-    ## create edit person test
+        ''' test ready '''
     
 
         

@@ -20,7 +20,7 @@ The app contains several endpoints that can be used for CRUD operations on a Peo
 The test automation module contains an implementation created as a modular approach that helps maintain the code and keeps it simple.
 
 ## Database
-I started the project by importing data from json file, but I decided to implement database using sqlite3.
+I started the project by importing data from json file, but I decided to implement database using sqlite3 and SQLAlchemy.
 
 ## Future Plans
 

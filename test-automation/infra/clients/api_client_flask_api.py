@@ -37,4 +37,27 @@ class APIClientRestAPI(APIClient):
         return self.delete_request(f'delete-person', data=data)
     
 
+    def restful_get_person_by_id(self, id):
+        return self.get_request(f'restful_person/{id}')
     
+    def restful_get_person_by_name(self, name):
+        return self.get_request(f'restful_person/{name}')
+
+    def restful_add_person(self, name, age, gender):
+        data = {
+            "name" : str(name),
+            "age" : int(age),
+            "gender" : str(gender)
+        }
+        return self.post_request('restful_new_person', data=data)
+    
+    def restful_edit_person(self, id_or_name, new_name=None, new_age=None, new_gender=None):
+        data = {
+            "name": str(new_name),
+            "age": int(new_age),
+            "gender": str(new_gender)
+        }
+        return self.put_request(f'restful_person/{id_or_name}', data=data)
+
+    def restful_delete_person(self, id_or_name):
+        return self.delete_request(f'restful_person/{id_or_name}')

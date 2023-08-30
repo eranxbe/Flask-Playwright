@@ -2,112 +2,99 @@ from flask import Blueprint, request, jsonify
 from sqlalchemy import select
 from ..extensions import db
 from ..models.model_person import Person
+from flask_restful import Resource, Api, abort, reqparse
 
  
 rest = Blueprint('rest', __name__, url_prefix="/rest")
+api = Api(rest)
 
+## using flask_restful
 
-@rest.before_request
-def parse_urlencoded_data():
-    if request.content_type == 'application/x-www-form-urlencoded':
-        data = request.form.to_dict()
-        request.parsed_data = data
+class Hello(Resource):
+    def get(self):
+        return {'message' : 'Hello World!'}
+    
+api.add_resource(Hello, '/hello-restful')    
 
-@rest.route('/hello')
-def index():
-    return {"message": "hello!"}, 200
+class People(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('_id', type=int)
+        self.parser.add_argument('name')
+        self.parser.add_argument('age', type=int)
+        self.parser.add_argument('gender')
 
-@rest.route('/person/<name>', methods=['GET'])
-def get_person_by_name(name: str):
-    person = Person.query.filter_by(name=name).first()
-    if not person:
-        return jsonify({"message": "Person not found", "status": 404}), 404
-    person_data =  {"id" : person._id,
-        "name": person.name,
-        "age": person.age,
-        "gender": person.gender}
-    return jsonify(person_data), 200
+    def get(self, id_or_name=None):
+        person = None
+        if id_or_name.isdigit():
+            person = Person.query.filter_by(_id=int(id_or_name)).first()
+        else:
+            person = Person.query.filter_by(name=id_or_name).first()
 
-@rest.route('/get-all', methods=['GET'])
-def get_all():
-    found_persons_objects = Person.query.all()
-    found_persons = []
-    for person in found_persons_objects:
-        person_data = {
-            "id" : person._id,
-            "name" : person.name,
-            "age" : person.age,
-            "gender" : person.gender
-        }
-        found_persons.append(person_data)
-    return jsonify(found_persons), 200
+        if not person:
+            return {'message': f'Person with id or name {id_or_name} not found',
+                    'status': 404}
         
+        person_data =  {"id" : person._id,
+                        "name": person.name,
+                        "age": person.age,
+                        "gender": person.gender}
 
-# I will work on this soon
-#
-# @rest.route("/search", methods=["GET"])
-# def search_person():
-#     name = request.args.get('name')
-#     age = request.args.get('age', type=int)
+        return {"person": person_data,
+                'status': 200}
+    
+    def post(self):
+        args = self.parser.parse_args()
+        new_person = Person(name=args['name'], age=args['age'], gender=args['gender'])
+        db.session.add(new_person)
+        db.session.commit()
+        return {"message": f"Person {args['name']} was added successfully",
+                'status': 201}
+    
+    def put(self, id_or_name=None):
+        args = self.parser.parse_args()
+        person = None
+        if id_or_name.isdigit():
+            person = Person.query.filter_by(_id=int(id_or_name)).first()
+        else:
+            person = Person.query.filter_by(name=id_or_name).first()
 
-#     people_age = [p for p in people if p['age'] == age]
+        if not person:
+            return {'message': f'Person with id {id} not found', 'status': 404}
 
-#     if name is None:
-#         if age is None:
-#             return jsonify(people)
-#         else:
-#             return jsonify(people_age)
-#     else:
-#         people_name = [p for p in people if name.lower() in p['name'].lower()]
-#         if age is None:
-#             return jsonify(people_name)
-#         else:
-#             combined = [p for p in people_age if p in people_name] 
-#             return jsonify(combined)
+        if args['name'] is not None:
+            person.name = args['name']
+        if args['age'] is not None:
+            person.age = args['age']
+        if args['gender'] is not None:
+            person.gender = args['gender']
 
+        db.session.commit()
 
-@rest.route("/add-person", methods=["POST"])
-def add_person():
-    data = request.json
-    name = data.get('name')
-    age = data.get('age')
-    gender = data.get('gender')
-    new_person = Person(name=name, age=age, gender=gender)
-    db.session.add(new_person)
-    db.session.commit()
-    return jsonify({"message" : f"Person {name} was added!"}), 201
+        return {'message': f'Person with id or name{id_or_name} was updated successfully', 'status': 200}
 
+    def delete(self, id_or_name):
+        person = None
+        if id_or_name.isdigit():
+            person = Person.query.filter_by(_id=int(id_or_name)).first()
+        else:
+            person = Person.query.filter_by(name=id_or_name).first()
 
+        if not person:
+            return {'message': f'Person with id or name {id_or_name} not found', 'status': 404}
 
-# I will work on this soon
-#
-# @rest.route("/change-person", methods=["PUT"])
-# def change_person():
-#     data = request.parsed_data
-#     person = Person(**data)
-#     new_person = {
-#         'id': person.id,
-#         'name': person.name,
-#         'age': person.age,
-#         'gender': person.gender
-#     }
-#     person_list = [p for p in people if p['id'] == person.id]
-#     if len(person_list) > 0:
-#         people.remove(person_list[0])
-#         people.append(new_person)
-#         with open("people.json", "w") as f:
-#             json.dump({'people': people}, f)
-#         return jsonify(new_person), 204
-#     else:
-#         return jsonify({'error': 'Person not found'}), 404
+        db.session.delete(person)
+        db.session.commit()
+        return {'message': f'Person with id or name {id_or_name} was deleted successfully',
+                'status': 202}
+    
+api.add_resource(People, '/restful_person/<string:id_or_name>', 
+                         '/restful_new_person')
 
-@rest.route("/delete-person", methods=["DELETE"])
-def delete_person():
-    data = request.json
-    name = data.get('name')
-    person = Person.query.filter_by(name=name).first()
-    if not person:
-        return jsonify({"message": "Person not found", "status": 404}), 404
-    db.session.delete(person)
-    db.session.commit()
-    return jsonify(f"person {person.name} with id {person._id} deleted"), 202
+'''
+curl commands that work
+curl -X GET "127.0.0.1:5000/rest/restful_person/<id_or_name>"
+curl -X POST -H "Content-Type: application/json" -d "{\"name\": \"name\", \"age\": age, \"gender\": \"male\"}" "127.0.0.1:5000/rest/restful_new_person"
+curl -X PUT -H "Content-Type: application/json" -d "{\"name\": \"newname\", \"age\": newage, \"gender\": \"newgender\"}" "127.0.0.1:5000/rest/restful_person/<id_or_name>"
+curl -X DELETE "127.0.0.1:5000/rest/restful_person/<id_or_name>"
+'''
